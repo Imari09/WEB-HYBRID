@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB-HYBRID - Главная</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
+	<link rel="stylesheet" href="css/custom.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
+    <script>
+        $(document).foundation();
+    </script>
+    <style>
+        /* Скрываем десктопное меню на мобильных */
+        @media screen and (max-width: 639px) {
+            .desktop-menu {
+                display: none !important;
+            }
+        }
+        /* Скрываем мобильную кнопку на десктопе */
+        @media screen and (min-width: 640px) {
+            .mobile-menu-button {
+                display: none !important;
+            }
+        }
+        /* Стили для мобильного меню */
+        .mobile-menu {
+            padding: 1rem;
+        }
+        .mobile-menu ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .mobile-menu li {
+            margin-bottom: 0.5rem;
+        }
+        .mobile-menu a {
+            color: #333;
+            text-decoration: none;
+            display: block;
+            padding: 0.5rem;
+            border-radius: 4px;
+        }
+        .mobile-menu a:hover {
+            background: #f5f5f5;
+        }
+        .nested-menu {
+            padding-left: 1rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+<!-- Мобильное меню - Off Canvas -->
+<div class="off-canvas-wrapper">
+    <div class="off-canvas position-left" id="offCanvas" data-off-canvas>
+        <div class="mobile-menu">
+            <h4>WEB-HYBRID</h4>
+            <ul class="vertical menu">
+                <li><a href="index.html">Главная</a></li>
+                <li>
+                    <a href="servers.html">HTTP Серверы ▾</a>
+                    <ul class="nested-menu">
+                        <li><a href="apache.html">Apache</a></li>
+                        <li><a href="nginx.html">Nginx</a></li>
+                        <li><a href="litespeed.html">LiteSpeed</a></li>
+                    </ul>
+                </li>
+                <li><a href="comparison.html">Сравнение серверов</a></li>
+                <li><a href="languages.html">Языки программирования</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="off-canvas-content" data-off-canvas-content>
+        <!-- Кнопка мобильного меню -->
+        <div class="title-bar mobile-menu-button">
+            <div class="title-bar-left">
+                <button class="menu-icon" type="button" data-toggle="offCanvas"></button>
+                <span class="title-bar-title">WEB-HYBRID</span>
+            </div>
+        </div>
+
+        <!-- Десктопное меню -->
+        <div class="top-bar desktop-menu" id="main-menu">
+            <div class="top-bar-left">
+                <ul class="dropdown menu" data-dropdown-menu>
+                    <li class="menu-text">WEB-HYBRID</li>
+                    <li><a href="index.html">Главная</a></li>
+                    <li>
+                        <a href="servers.html">HTTP Серверы ▾</a>
+                        <ul class="menu">
+                            <li><a href="apache.html">Apache</a></li>
+                            <li><a href="nginx.html">Nginx</a></li>
+                            <li><a href="litespeed.html">LiteSpeed</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="comparison.html">Сравнение серверов</a></li>
+                    <li><a href="languages.html">Языки программирования</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x" style="padding-top: 2rem;">
+                <!-- Main Content Area -->
+                <div class="large-8 cell">
+                    <div class="hero-section">
+                        <h1> Добро пожаловать в мир веб-серверов</h1>
+                        <p>Веб-серверы – это основа современного интернета. Они обрабатывают запросы пользователей и доставляют контент веб-сайтов. На этом сайте мы рассмотрим самые популярные HTTP серверы, такие как Nginx и Apache, а также языки программирования, используемые для веб-разработки.</p>
+                    </div>
+
+                    <article class="blog-post">
+                        <h2><strong>Что такое HTTP сервер?</strong></h2>
+                        <p><strong>HTTP сервер</strong> – это программное обеспечение, которое понимает URL-адреса и HTTP протокол, который браузер использует для просмотра веб-страниц. Сервер хранит, обрабатывает и доставляет веб-страницы клиентам.</p>
+                        
+                        <div class="grid-x grid-margin-x">
+                            <div class="medium-6 cell">
+                                <div class="callout primary">
+                                    <h5><strong>Основные функции</strong></h5>
+                                    <ul>
+                                        <li>Обработка HTTP запросов</li>
+                                        <li>Отдача статического контента</li>
+                                        <li>Запуск серверных приложений</li>
+                                        <li>Управление виртуальными хостами</li>
+                                        <li>Обеспечение безопасности</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="medium-6 cell">
+                                <div class="callout secondary">
+                                    <h5><strong>Как это работает?</strong></h5>
+                                    <ul>
+                                        <li>Клиент отправляет HTTP запрос</li>
+                                        <li>Сервер обрабатывает запрос</li>
+                                        <li>Сервер генерирует ответ</li>
+                                        <li>Клиент получает и отображает данные</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3><strong>Архитектура клиент-сервер</strong></h3>
+                        <div class="text-center">
+                            <img src="img/schema.png" alt="Архитектура клиент-сервер" style="width: 100%; max-width: 600px; border-radius: 8px;">
+                            <p><small>Схема взаимодействия между клиентом и сервером</small></p>
+                        </div>
+                    </article>
+
+                    <article class="blog-post" id="servers">
+                        <h2><strong>Популярные HTTP серверы</strong></h2>
+                        <p>Выбор веб-сервера зависит от многих факторов: производительности, удобства настройки, поддержки технологий и конкретных требований проекта.</p>
+                        
+                        <div class="grid-x grid-margin-x">
+                            <div class="medium-6 cell">
+                                <div class="server-card">
+                                    <div class="card">
+                                        <div class="card-section">
+                                            <h3><strong>Apache HTTP Server</strong></h3>
+                                            <p>Самый популярный веб-сервер с открытым исходным кодом, разрабатываемый Apache Software Foundation.</p>
+                                            <div class="server-stats">
+                                                <span class="label success">Рыночная доля: 25.5%</span>
+                                            </div>
+                                            <ul>
+                                                <li>Модульная архитектура</li>
+                                                <li>Поддержка .htaccess</li>
+                                                <li>Широкая документация</li>
+                                            </ul>
+                                            <a href="apache.html" class="button expanded">Подробнее об Apache</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medium-6 cell">
+                                <div class="server-card">
+                                    <div class="card">
+                                        <div class="card-section">
+                                            <h3><strong>Nginx</strong></h3>
+                                            <p>Высокопроизводительный HTTP сервер и обратный прокси-сервер, а также почтовый прокси-сервер.</p>
+                                            <div class="server-stats">
+                                                <span class="label success">Рыночная доля: 33.6%</span>
+                                            </div>
+                                            <ul>
+                                                <li>Событийно-ориентированная архитектура</li>
+                                                <li>Эффективная работа с статикой</li>
+                                                <li>Балансировка нагрузки</li>
+                                            </ul>
+                                            <a href="nginx.html" class="button expanded">Подробнее о Nginx</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="medium-6 cell">
+                                <div class="server-card">
+                                    <div class="card">
+                                        <div class="card-section">
+                                            <h3><strong>LiteSpeed</strong></h3>
+                                            <p>Безопасный и масштабируемый веб-сервер с закрытым исходным кодом.</p>
+                                            <div class="server-stats">
+                                                <span class="label success">Рыночная доля: 14.8%</span>
+                                            </div>
+                                            <ul>
+                                                <li>Событийно-ориентированная архитектура</li>
+                                                <li>Есть бесплатная версия OpenLiteSpeed</li>
+                                                <li>Высокая производительность</li>
+                                            </ul>
+                                            <a href="litespeed.html" class="button expanded">Подробнее о LiteSpeed</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid-x grid-margin-x">
+                            <div class="cell">
+                                <div class="callout">
+                                    <h4> Сравнение серверов</h4>
+                                    <p>Не знаете, какой сервер выбрать? <a href="comparison.html">Сравните возможности Apache, Nginx и LiteSpeed</a> в нашем подробном руководстве.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Остальной контент... -->
+                </div>
+
+                <!-- Sidebar -->
+                <div class="large-4 cell">
+                    <aside class="sidebar">
+                        <div class="card">
+                            <div class="card-section">
+                                <h3> Подписка на новости</h3>
+                                <p>Будьте в курсе последних новостей о веб-серверах и технологиях!</p>
+                                <form id="newsletter-form">
+                                    <label>Ваше имя
+                                        <input type="text" placeholder="Иван" required>
+                                    </label>
+                                    <label>Email адрес
+                                        <input type="email" placeholder="ivan@example.com" required>
+                                    </label>
+                                    <div class="grid-x grid-margin-x">
+                                        <div class="cell">
+                                            <label>
+                                                <input type="checkbox" required>
+                                                Я согласен с политикой конфиденциальности
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <button class="button expanded" type="submit">Подписаться на новости</button>
+                                </form>
+                                <div id="newsletter-message" class="callout success" style="display: none;">
+                                    <h5><i class="fas fa-check-circle"></i> Спасибо за интерес!</h5>
+                                    <p>Если бы эта кнопка работала, вы бы обязательно получали свежие новости о веб-серверах и технологиях!</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Остальная часть сайдбара... -->
+                    </aside>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer margin-top-3">
+            <div class="grid-container">
+                <div class="grid-x">
+                    <div class="large-12 cell">
+                        <p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
+                        <p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21</p>
+                        <p>Почта: <a href="mailto:kislyakovamariya@hybrid.ru">kislyakovamariya@hybrid.ru</a></p>
+                        <p>Телефон: +7 (999) 123-45-67</p>
+                        <p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</div>
+
+<script>
+document.getElementById('newsletter-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const name = this.querySelector('input[type="text"]').value.trim();
+    const email = this.querySelector('input[type="email"]').value.trim();
+    const checkbox = this.querySelector('input[type="checkbox"]');
+    
+    if (!name || !email) {
+        alert('Пожалуйста, заполните все обязательные поля!');
+        return;
+    }
+    
+    if (!checkbox.checked) {
+        alert('Пожалуйста, согласитесь с политикой конфиденциальности');
+        return;
+    }
+    
+    if (!email.includes('@')) {
+        alert('Пожалуйста, введите корректный email адрес!');
+        return;
+    }
+    
+    document.getElementById('newsletter-form').style.display = 'none';
+    document.getElementById('newsletter-message').style.display = 'block';
+    
+    console.log('Новый подписчик:', { name: name, email: email });
+});
+
+// Плавная прокрутка к якорям
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+            target.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    });
+});
+</script>
+</body>
+</html>

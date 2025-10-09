@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB-HYBRID - HTTP Серверы</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
+    <script>
+        $(document).foundation();
+    </script>
+	<script src="assets/menu.js"></script>
+</head>
+<body>
+<!-- Кнопка мобильного меню -->
+    <div class="mobile-menu-button">
+        <button onclick="toggleMobileMenu()">☰ WEB-HYBRID</button>
+    </div>
+
+    <!-- Десктопное меню -->
+    <div class="top-bar desktop-menu">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text">WEB-HYBRID</li>
+                <li><a href="index.html">Главная</a></li>
+                <li>
+                    <a href="servers.html">HTTP Серверы ▾</a>
+                    <ul class="menu">
+                        <li><a href="apache.html">Apache</a></li>
+                        <li><a href="nginx.html">Nginx</a></li>
+                        <li><a href="litespeed.html">LiteSpeed</a></li>
+                    </ul>
+                </li>
+                <li><a href="comparison.html">Сравнение серверов</a></li>
+                <li><a href="languages.html">Языки программирования</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Мобильное боковое меню -->
+    <div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <button class="close-btn" onclick="closeMobileMenu()">×</button>
+        <h4>WEB-HYBRID</h4>
+        <ul>
+            <li><a href="index.html" onclick="closeMobileMenu()">Главная</a></li>
+            <li>
+                <a href="javascript:void(0)" onclick="toggleSubmenu('serversSubmenu')">HTTP Серверы ▾</a>
+                <ul class="submenu" id="serversSubmenu">
+                    <li><a href="apache.html" onclick="closeMobileMenu()">Apache</a></li>
+                    <li><a href="nginx.html" onclick="closeMobileMenu()">Nginx</a></li>
+                    <li><a href="litespeed.html" onclick="closeMobileMenu()">LiteSpeed</a></li>
+                </ul>
+            </li>
+            <li><a href="comparison.html" onclick="closeMobileMenu()">Сравнение серверов</a></li>
+            <li><a href="languages.html" onclick="closeMobileMenu()">Языки программирования</a></li>
+        </ul>
+    </div>
+
+<!-- Main Content -->
+<div class="grid-container">
+    <div class="grid-x grid-padding-x" style="padding-top: 2rem;">
+        <!-- Main Content Area -->
+        <div class="large-8 cell">
+            <div class="hero-section">
+                <h1>HTTP Серверы</h1>
+                <p>Обзор популярных HTTP серверов, используемых для веб-разработки.</p>
+            </div>
+            <article class="blog-post">
+                <h2><strong>Популярные HTTP серверы</strong></h2>
+                <p>Веб-серверы являются фундаментальным компонентом современного интернета, отвечая за обработку запросов и доставку контента пользователям. Выбор правильного веб-сервера критически важен для производительности, безопасности и масштабируемости веб-приложений.</p>
+
+                <div class="grid-x grid-margin-x">
+                    <div class="large-6 cell">
+                        <div class="card">
+                            <div class="card-section">
+                                <h3><strong>Apache HTTP Server</strong></h3>
+                                <p>Apache – веб-сервер с открытым исходным кодом, известный своей гибкостью и модульной архитектурой.</p>
+                                <ul>
+                                    <li><strong>Год выпуска:</strong> 1995</li>
+                                    <li><strong>Рыночная доля:</strong> 25.5%</li>
+                                    <li><strong>Лицензия:</strong> Apache 2.0</li>
+                                </ul>
+                                <a href="apache.html" class="button small expanded">Подробнее об Apache</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="large-6 cell">
+                        <div class="card">
+                            <div class="card-section">
+                                <h3><strong>Nginx</strong></h3>
+                                <p>Nginx – высокопроизводительный сервер, оптимизированный для обработки большого количества одновременных соединений.</p>
+                                <ul>
+                                    <li><strong>Год выпуска:</strong> 2004</li>
+                                    <li><strong>Рыночная доля:</strong> 33.6%</li>
+                                    <li><strong>Лицензия:</strong> BSD-подобная</li>
+                                </ul>
+                                <a href="nginx.html" class="button small expanded">Подробнее о Nginx</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="large-6 cell">
+                        <div class="card">
+                            <div class="card-section">
+                                <h3><strong>LiteSpeed Web Server</strong></h3>
+                                <p>Высокопроизводительный коммерческий веб-сервер с совместимостью с Apache.</p>
+                                <ul>
+                                    <li><strong>Год выпуска:</strong> 2003</li>
+                                    <li><strong>Рыночная доля:</strong> 14.8%</li>
+                                    <li><strong>Лицензия:</strong> Проприетарная</li>
+                                </ul>
+                                <a href="litespeed.html" class="button small expanded">Подробнее о LiteSpeed</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h3><strong>Критерии выбора веб-сервера</strong></h3>
+                <div class="grid-x grid-margin-x">
+                    <div class="cell">
+                        <div class="success callout">
+                            <ul>
+                                <li><strong>Производительность:</strong> Способность обрабатывать большое количество одновременных соединений;</li>
+                                <li><strong>Масштабируемость:</strong> Возможность роста вместе с нагрузкой на приложение;</li>
+                                <li><strong>Безопасность:</strong> Встроенные механизмы защиты и регулярные обновления;</li>
+                                <li><strong>Гибкость:</strong> Поддержка различных модулей и технологий;</li>
+                                <li><strong>Сообщество и поддержка:</strong> Наличие документации и активного сообщества;</li>
+                                <li><strong>Стоимость:</strong> Лицензионные ограничения и стоимость владения.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <h3><strong>Архитектурные подходы</strong></h3>
+                <div class="grid-x grid-margin-x">
+                    <div class="medium-4 cell">
+                        <div class="card">
+                            <div class="card-section">
+                                <h5><strong>Процессно-ориентированная</strong></h5>
+                                <p>Каждое соединение обрабатывается отдельным процессом (Apache mpm_prefork).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="medium-4 cell">
+                        <div class="card">
+                            <div class="card-section">
+                                <h5><strong>Потоково-ориентированная</strong></h5>
+                                <p>Использование потоков внутри процессов для эффективного использования ресурсов (Apache mpm_worker).</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="medium-4 cell">
+                        <div class="card">
+                            <div class="card-section">
+                                <h5><strong>Событийно-ориентированная</strong></h5>
+                                <p>Асинхронная обработка запросов в одном или нескольких процессах (Nginx, Apache mpm_event).</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="callout secondary">
+                    <h4><strong>Современные тенденции</strong></h4>
+                    <p>В современных веб-архитектурах часто используется комбинация серверов: Nginx в качестве обратного прокси и балансировщика нагрузки, а Apache или специализированные серверы для обработки динамического контента.</p>
+                </div>
+
+                <div class="grid-x grid-margin-x">
+                    <div class="cell text-center">
+                        <a href="comparison.html" class="button large">Сравнение серверов →</a>
+                        <a href="languages.html" class="button large hollow">Языки программирования</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="large-4 cell">
+            <aside class="sidebar">
+                <div class="card">
+                    <div class="card-section">
+                        <h4>Быстрая навигация</h4>
+                        <ul class="menu vertical">
+                            <li><a href="apache.html">Apache HTTP Server</a></li>
+                            <li><a href="nginx.html">Nginx</a></li>
+                            <li><a href="litespeed.html">LiteSpeed</a></li>
+                            <li><a href="comparison.html">Сравнение серверов</a></li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-section">
+                        <h4>Полезные ресурсы</h4>
+                        <ul class="menu vertical">
+                            <li><a href="https://httpd.apache.org/docs/" target="_blank">Документация Apache</a></li>
+                            <li><a href="https://nginx.org/en/docs/" target="_blank">Документация Nginx</a></li>
+                            <li><a href="https://www.litespeedtech.com/support" target="_blank">Поддержка LiteSpeed</a></li>
+                            <li><a href="https://webmasters.stackexchange.com/" target="_blank">Webmasters Stack Exchange</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+    <footer class="footer margin-top-3">
+        <div class="grid-container">
+            <div class="grid-x">
+                <div class="large-12 cell">
+                    <p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
+                    <p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21
+					<p>Почта: <a href="mailto:kislyakovamariya@hybrid.ru">kislyakovamariya@hybrid.ru</a></p>
+					<p>Телефон: +7 (999) 123-45-67</p>
+					<p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB-HYBRID - PHP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
+    <script>
+        $(document).foundation();
+    </script>
+	<script src="assets/menu.js"></script>
+    <script>
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Преобразование таблицы в JSON для фильтрации пустых строк
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Отфильтрованные пустые строки
+                var filteredData = jsonData.filter(function(row) { return row.some(filledCell); });
+
+                // Поиск строки заголовка, игнорируя строки с меньшим количеством заполненных ячеек, чем в следующей строке
+                var headerRowIndex = filteredData.findIndex(function(row, index) {
+                  return row.filter(filledCell).length >= (filteredData[index + 1] ? filteredData[index + 1].filter(filledCell).length : 0);
+                });
+                // Отступ
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Преобразование готового JSON обратно в CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+    </script>
+</head>
+<body>
+<!-- Кнопка мобильного меню -->
+    <div class="mobile-menu-button">
+        <button onclick="toggleMobileMenu()">☰ WEB-HYBRID</button>
+    </div>
+
+    <!-- Десктопное меню -->
+    <div class="top-bar desktop-menu">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text">WEB-HYBRID</li>
+                <li><a href="index.html">Главная</a></li>
+                <li>
+                    <a href="servers.html">HTTP Серверы ▾</a>
+                    <ul class="menu">
+                        <li><a href="apache.html">Apache</a></li>
+                        <li><a href="nginx.html">Nginx</a></li>
+                        <li><a href="litespeed.html">LiteSpeed</a></li>
+                    </ul>
+                </li>
+                <li><a href="comparison.html">Сравнение серверов</a></li>
+                <li><a href="languages.html">Языки программирования</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Мобильное боковое меню -->
+    <div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <button class="close-btn" onclick="closeMobileMenu()">×</button>
+        <h4>WEB-HYBRID</h4>
+        <ul>
+            <li><a href="index.html" onclick="closeMobileMenu()">Главная</a></li>
+            <li>
+                <a href="javascript:void(0)" onclick="toggleSubmenu('serversSubmenu')">HTTP Серверы ▾</a>
+                <ul class="submenu" id="serversSubmenu">
+                    <li><a href="apache.html" onclick="closeMobileMenu()">Apache</a></li>
+                    <li><a href="nginx.html" onclick="closeMobileMenu()">Nginx</a></li>
+                    <li><a href="litespeed.html" onclick="closeMobileMenu()">LiteSpeed</a></li>
+                </ul>
+            </li>
+            <li><a href="comparison.html" onclick="closeMobileMenu()">Сравнение серверов</a></li>
+            <li><a href="languages.html" onclick="closeMobileMenu()">Языки программирования</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x" style="padding-top: 2rem;">
+            <!-- Main Content Area -->
+            <div class="large-8 cell">
+                <div class="hero-section">
+                    <h1>PHP</h1>
+                </div>
+
+                <article class="blog-post">
+                    <h3><strong>Обзор PHP</strong></h3>
+                    <p><strong>PHP</strong> – это скриптовый язык программирования. Имеет открытый исходный код. Изначально создавался для разработки веб-приложений, но в процессе обновлений стал языком общего назначения.</p>
+                    <p>Язык программирования PHP спроектировал датский программист Расмус Лердорф в 1995 году как инструмент для создания интерактивных и динамических веб-сайтов. Сейчас PHP активно используют веб-разработчики для создания сайтов и веб-приложений. Это наименее конкурентный язык для работы. Его использует большинство сервисов, и, скорее всего, ситуация не изменится в ближайшие 10 лет. Поэтому специалисты очень востребованы.</p>
+                    <p>Основная область применения – разработка скриптов, которые работают на стороне сервера. Также можно создавать скрипты командной строки и GUI-приложения (приложения с графическим интерфейсом пользователя).</p>
+                    
+                    <div class="callout success">
+                        <h4>Ключевые преимущества PHP</h4>
+                        <p>PHP остается одним из самых популярных языков благодаря своей простоте, мощным возможностям и огромному сообществу.</p>
+                    </div>
+
+                    <h3><strong>Особенности PHP</strong></h3>
+                    <div class="grid-x grid-margin-x">
+                        <div class="medium-6 cell">
+                            <ul class="feature-list">
+                                <li><strong>Простота изучения и использования</strong> – интуитивный синтаксис, похожий на C и Java</li>
+                                <li><strong>Широкая поддержка хостинг-провайдеров</strong> – доступен на большинстве shared хостингов</li>
+                                <li><strong>Кроссплатформенность</strong> – работает на Windows, Linux, macOS</li>
+                                <li><strong>Богатая стандартная библиотека</strong> – более 1000 встроенных функций</li>
+                            </ul>
+                        </div>
+                        <div class="medium-6 cell">
+                            <ul class="feature-list">
+                                <li><strong>Большое сообщество и обширная документация</strong> – активная поддержка разработчиков</li>
+                                <li><strong>Интеграция с различными базами данных</strong> – MySQL, PostgreSQL, MongoDB и другие</li>
+                                <li><strong>Поддержка ООП</strong> – полная объектно-ориентированная модель</li>
+                                <li><strong>Мощные фреймворки</strong> – Laravel, Symfony, CodeIgniter</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3><strong>Использование с веб-серверами</strong></h3>
+                    <p>PHP может работать с различными веб-серверами через разные методы интеграции:</p>
+                    
+                    <div class="grid-x grid-margin-x">
+                        <div class="medium-4 cell">
+                            <div class="card text-center">
+                                <div class="card-section">
+                                    <h5><strong>Apache + mod_php</strong></h5>
+                                    <p>Классическая связка с модулем mod_php</p>
+                                    <span class="label success">Рекомендуется для начинающих</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="medium-4 cell">
+                            <div class="card text-center">
+                                <div class="card-section">
+                                    <h5><strong>Nginx + PHP-FPM</strong></h5>
+                                    <p>Высокопроизводительное решение</p>
+                                    <span class="label warning">Для продвинутых пользователей</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="medium-4 cell">
+                            <div class="card text-center">
+                                <div class="card-section">
+                                    <h5><strong>Встроенный сервер</strong></h5>
+                                    <p>PHP Development Server для разработки</p>
+                                    <span class="label secondary">Для локальной разработки</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3><strong>Пример кода на PHP</strong></h3>
+                    <pre><code class="language-php">&lt;?php
+// Простой пример PHP скрипта
+class User {
+    private string $name;
+    
+    public function __construct(string $name) {
+        $this->name = $name;
+    }
+    
+    public function greet(): string {
+        return "Привет, " . $this->name . "!";
+    }
+}
+
+// Использование класса
+$user = new User("Мир");
+echo $user->greet(); // Вывод: Привет, Мир!
+
+// Работа с массивами
+$fruits = ['яблоко', 'банан', 'апельсин'];
+foreach ($fruits as $fruit) {
+    echo $fruit . "\n";
+}
+
+// Современный PHP 8.0+
+$result = match (true) {
+    $age >= 18 => 'Взрослый',
+    $age >= 13 => 'Подросток',
+    default => 'Ребенок'
+};
+?&gt;</code></pre>
+
+                    <h3><strong>Популярные фреймворки PHP</strong></h3>
+                    <div class="grid-x grid-margin-x">
+                        <div class="medium-6 cell">
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5><strong>Laravel</strong></h5>
+                                    <p>Самый популярный PHP-фреймворк с элегантным синтаксисом</p>
+                                    <ul>
+                                        <li>Eloquent ORM</li>
+                                        <li>Blade templating</li>
+                                        <li>Artisan CLI</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="medium-6 cell">
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5><strong>Symfony</strong></h5>
+                                    <p>Enterprise-фреймворк с компонентной архитектурой</p>
+                                    <ul>
+                                        <li>Компоненты Symfony</li>
+                                        <li>Twig templating</li>
+                                        <li>Doctrine ORM</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3><strong>С чего начать изучение?</strong></h3>
+                    <div class="grid-x grid-margin-x">
+                        <div class="cell">
+                            <div class="callout secondary">
+                                <h5>Пошаговый план изучения PHP:</h5>
+                                <ol>
+                                    <li><strong>Основы синтаксиса</strong> - переменные, типы данных, операторы</li>
+                                    <li><strong>Функции и массивы</strong> - работа с данными</li>
+                                    <li><strong>ООП в PHP</strong> - классы, объекты, наследование</li>
+                                    <li><strong>Работа с базами данных</strong> - MySQL, PDO</li>
+                                    <li><strong>Фреймворк Laravel</strong> - современная разработка</li>
+                                </ol>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="python.html" class="button large">Следующий: Python →</a>
+                        <a href="languages.html" class="button large hollow">Все языки</a>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="large-4 cell">
+                <aside class="sidebar">
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Быстрая навигация</h4>
+                            <ul class="menu vertical">
+                                <li><a href="php.html" class="active">PHP</a></li>
+                                <li><a href="python.html">Python</a></li>
+                                <li><a href="nodejs.html">Node.js</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>О PHP</h4>
+                            <ul class="no-bullet">
+                                <li><strong>Создан:</strong> 1994 год</li>
+                                <li><strong>Последняя версия:</strong> 8.3.0</li>
+                                <li><strong>Типизация:</strong> Динамическая</li>
+                                <li><strong>Парадигма:</strong> Мультипарадигменный</li>
+                                <li><strong>Лицензия:</strong> PHP License</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Видео: PHP8 за 1 час</h4>
+                            <div class="video-container">
+                                <iframe src="https://rutube.ru/play/embed/97ed79cb1cac70299295a80015108009" 
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                        allowfullscreen>
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Полезные ресурсы</h4>
+                            <ul class="menu vertical">
+                                <li><a href="https://www.php.net/" target="_blank">Официальный сайт</a></li>
+                                <li><a href="https://www.php.net/manual/ru/" target="_blank">Документация</a></li>
+                                <li><a href="https://laravel.com/" target="_blank">Laravel</a></li>
+                                <li><a href="https://symfony.com/" target="_blank">Symfony</a></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Установка PHP</h4>
+                            <pre><code># Ubuntu/Debian
+sudo apt install php
+
+# Windows
+# Скачать с php.net
+
+# macOS
+brew install php</code></pre>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Популярность</h4>
+                            <div class="progress" role="progressbar" aria-valuenow="76" aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-meter" style="width: 76%">
+                                    <p class="progress-meter-text">76% веб-сайтов</p>
+                                </div>
+                            </div>
+                            <p>PHP используется на большинстве веб-сайтов мира</p>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // Подсветка кода
+    document.addEventListener('DOMContentLoaded', function() {
+        const codeBlocks = document.querySelectorAll('pre code');
+        codeBlocks.forEach(function(block) {
+            block.innerHTML = block.innerHTML
+                .replace(/&lt;\?php/g, '<span style="color: #f92672">&lt;?php</span>')
+                .replace(/class/g, '<span style="color: #a6e22e">class</span>')
+                .replace(/function/g, '<span style="color: #a6e22e">function</span>')
+                .replace(/echo/g, '<span style="color: #f92672">echo</span>')
+                .replace(/return/g, '<span style="color: #f92672">return</span>')
+                .replace(/(public|private|protected)/g, '<span style="color: #a6e22e">$1</span>')
+                .replace(/\$[a-zA-Z_][a-zA-Z0-9_]*/g, '<span style="color: #fd971f">$&</span>')
+                .replace(/\/\/.*$/gm, '<span style="color: #75715e">$&</span>');
+        });
+    });
+    </script>
+
+    <!-- Footer -->
+    <footer class="footer margin-top-3">
+        <div class="grid-container">
+            <div class="grid-x">
+                <div class="large-12 cell">
+                    <p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
+                    <p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21</p>
+                    <p>Почта: <a href="mailto:kislyakovamariya@hybrid.ru">kislyakovamariya@hybrid.ru</a></p>
+                    <p>Телефон: +7 (999) 123-45-67</p>
+                    <p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

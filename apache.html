@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB-HYBRID - Apache HTTP Server</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
+    <script src="assets/menu.js"></script>
+	<script>
+        $(document).foundation();
+    </script>
+    <script>
+    var gk_isXlsx = false;
+    var gk_xlsxFileLookup = {};
+    var gk_fileData = {};
+    function filledCell(cell) {
+      return cell !== '' && cell != null;
+    }
+    function loadFileData(filename) {
+    if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+        try {
+            var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+            var firstSheetName = workbook.SheetNames[0];
+            var worksheet = workbook.Sheets[firstSheetName];
+
+            // Преобразование таблицы в JSON для фильтрации пустых строк
+            var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+            // Отфильтрованные пустые строки
+            var filteredData = jsonData.filter(function(row) { return row.some(filledCell); });
+
+            // Поиск строки заголовка, игнорируя строки с меньшим количеством заполненных ячеек, чем в следующей строке
+            var headerRowIndex = filteredData.findIndex(function(row, index) {
+              return row.filter(filledCell).length >= (filteredData[index + 1] ? filteredData[index + 1].filter(filledCell).length : 0);
+            });
+            // Отступ
+            if (headerRowIndex === -1 || headerRowIndex > 25) {
+              headerRowIndex = 0;
+            }
+
+            // Преобразование готового JSON обратно в CSV
+            var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+            csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+            return csv;
+        } catch (e) {
+            console.error(e);
+            return "";
+        }
+    }
+    return gk_fileData[filename] || "";
+    }
+</script>
+</head>
+<body>
+<!-- Кнопка мобильного меню -->
+    <div class="mobile-menu-button">
+        <button onclick="toggleMobileMenu()">☰ WEB-HYBRID</button>
+    </div>
+
+    <!-- Десктопное меню -->
+    <div class="top-bar desktop-menu">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text">WEB-HYBRID</li>
+                <li><a href="index.html">Главная</a></li>
+                <li>
+                    <a href="servers.html">HTTP Серверы ▾</a>
+                    <ul class="menu">
+                        <li><a href="apache.html">Apache</a></li>
+                        <li><a href="nginx.html">Nginx</a></li>
+                        <li><a href="litespeed.html">LiteSpeed</a></li>
+                    </ul>
+                </li>
+                <li><a href="comparison.html">Сравнение серверов</a></li>
+                <li><a href="languages.html">Языки программирования</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Мобильное боковое меню -->
+    <div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
+    <div class="mobile-sidebar" id="mobileSidebar">
+        <button class="close-btn" onclick="closeMobileMenu()">×</button>
+        <h4>WEB-HYBRID</h4>
+        <ul>
+            <li><a href="index.html" onclick="closeMobileMenu()">Главная</a></li>
+            <li>
+                <a href="javascript:void(0)" onclick="toggleSubmenu('serversSubmenu')">HTTP Серверы ▾</a>
+                <ul class="submenu" id="serversSubmenu">
+                    <li><a href="apache.html" onclick="closeMobileMenu()">Apache</a></li>
+                    <li><a href="nginx.html" onclick="closeMobileMenu()">Nginx</a></li>
+                    <li><a href="litespeed.html" onclick="closeMobileMenu()">LiteSpeed</a></li>
+                </ul>
+            </li>
+            <li><a href="comparison.html" onclick="closeMobileMenu()">Сравнение серверов</a></li>
+            <li><a href="languages.html" onclick="closeMobileMenu()">Языки программирования</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x" style="padding-top: 2rem;">
+            <!-- Main Content Area -->
+            <div class="large-8 cell">
+                <div class="hero-section">
+                    <h1>Apache HTTP Server</h1>
+                </div>
+                <article class="blog-post">
+                    <h2><strong>Обзор Apache</strong></h2>
+                    <p>Apache HTTP Server был разработан Робертом Маккулом в 1995 году, а с 1999 года разрабатывается под управлением Apache Software Foundation – фонда развития программного обеспечения Apache. Так как HTTP сервер это первый и самый популярный проект фонда его обычно называют просто Apache.</p>
+                    <p>Веб-север Apache был самым популярным веб-сервером в интернете с 1996 года. Благодаря его популярности у Apache сильная документация и интеграция со сторонним софтом.</p>
+                    <p>Администраторы часто выбирают Apache из-за его гибкости, мощности и широкой распространенности. Он может быть расширен с помощью системы динамически загружаемых модулей и исполнять программы на большом количестве интерпретируемых языков программирования без использования внешнего программного обеспечения.</p>
+                    
+                    <div class="callout primary">
+                        <h4>Интересный факт</h4>
+                        <p>Название "Apache" происходит от "a patchy server" (заплатанный сервер), так как первоначально он был создан как набор исправлений к серверу NCSA HTTPd.</p>
+                    </div>
+
+                    <h3><strong>Основные особенности Apache</strong></h3>
+                    <ul>
+                        <li><strong>Модульная архитектура</strong> – возможность подключения дополнительных модулей для расширения функциональности;</li>
+                        <li><strong>Поддержка виртуальных хостов</strong> – хостинг нескольких сайтов на одном сервере;</li>
+                        <li><strong>Интеграция с языками программирования</strong> – PHP, Perl, Python через соответствующие модули;</li>
+                        <li><strong>Поддержка SSL/TLS</strong> – безопасное шифрование соединений;</li>
+                        <li><strong>Гибкая система аутентификации и авторизации</strong> – различные методы контроля доступа;</li>
+                        <li><strong>Кроссплатформенность</strong> – работает на Windows, Linux, macOS и других ОС;</li>
+                        <li><strong>.htaccess файлы</strong> – децентрализованное управление конфигурацией.</li>
+                    </ul>
+
+                    <h3><strong>Архитектура Apache</strong></h3>
+                    <p>Apache использует мультипроцессорную модульную архитектуру. Основной процесс (родительский) управляет пулом дочерних процессов (worker processes), которые обрабатывают входящие запросы.</p>
+
+                    <h4><strong>Модели обработки запросов</strong></h4>
+                    <div class="grid-x grid-margin-x">
+                        <div class="medium-6 cell">
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5><strong>mpm_prefork</strong></h5>
+                                    <p>Создает несколько дочерних процессов, каждый из которых обрабатывает одно соединение. Идеально для систем без потоковой поддержки.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="medium-6 cell">
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5><strong>mpm_worker</strong></h5>
+                                    <p>Использует смесь процессов и потоков для более эффективного использования ресурсов при большом количестве соединений.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="medium-6 cell">
+                            <div class="card">
+                                <div class="card-section">
+                                    <h5><strong>mpm_event</strong></h5>
+                                    <p>Данный модуль похож на mpm_worker, однако использует отдельные потоки для keep-alive и активных соединений, что предотвращает блокировку рабочих потоков и повышает производительность.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3><strong>Преимущества Apache</strong></h3>
+                    <div class="grid-x grid-margin-x">
+                        <div class="cell">
+                            <div class="success callout">
+                                <ul>
+                                    <li>Широкая документация и сообщество;</li>
+                                    <li>Простота настройки и использования;</li>
+                                    <li>Поддержка .htaccess для гибкой конфигурации;</li>
+                                    <li>Большое количество готовых модулей;</li>
+                                    <li>Стабильность и надежность.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3><strong>Недостатки Apache</strong></h3>
+                    <div class="grid-x grid-margin-x">
+                        <div class="cell">
+                            <div class="warning callout">
+                                <ul>
+                                    <li>Высокое потребление памяти при большом количестве соединений;</li>
+                                    <li>Меньшая производительность по сравнению с событийно-ориентированными серверами;</li>
+                                    <li>Ограничения в обработке статического контента при высоких нагрузках.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3><strong>Пример использования</strong></h3>
+                    <p>Apache идеально подходит для:</p>
+                    <ul>
+                        <li>Средних и небольших веб-сайтов;</li>
+                        <li>Сайтов с динамическим контентом (WordPress, Joomla, Drupal);</li>
+                        <li>Разработческих сред и тестовых серверов;</li>
+                        <li>Проектов, требующих частых изменений конфигурации через .htaccess.</li>
+                    </ul>
+
+                    <div class="callout secondary">
+                        <h4>Быстрый старт</h4>
+                        <p>Установка Apache на Ubuntu:</p>
+                        <pre><code>sudo apt update
+sudo apt install apache2
+sudo systemctl start apache2
+sudo systemctl enable apache2</code></pre>
+                    </div>
+
+                    <h3><strong>Безопасность Apache</strong></h3>
+                    <p>Рекомендации по безопасности:</p>
+                    <ul>
+                        <li>Регулярно обновлять версию Apache;</li>
+                        <li>Использовать последнюю версию TLS;</li>
+                        <li>Ограничить доступ к чувствительным директориям;</li>
+                        <li>Настроить правильные права доступа к файлам;</li>
+                        <li>Использовать модуль mod_security для защиты от атак.</li>
+                    </ul>
+
+                    <div class="grid-x grid-margin-x">
+                        <div class="cell text-center">
+                            <a href="nginx.html" class="button large">Перейти к nginx →</a>
+                            <a href="servers.html" class="button large hollow">Вернуться к списку серверов</a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="large-4 cell">
+                <aside class="sidebar">
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Быстрая навигация</h4>
+                            <ul class="menu vertical">
+                                <li><a href="apache.html">Apache HTTP Server</a></li>
+                                <li><a href="nginx.html">Nginx</a></li>
+                                <li><a href="litespeed.html">LiteSpeed</a></li>
+                                <li><a href="comparison.html">Сравнение серверов</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Статистика Apache</h4>
+                            <ul>
+                                <li><strong>Год выпуска:</strong> 1995</li>
+                                <li><strong>Последняя версия:</strong> 2.4.65</li>
+                                <li><strong>Рыночная доля:</strong> ~31%</li>
+                                <li><strong>Лицензия:</strong> Apache 2.0</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-section">
+                            <h4>Полезные ссылки</h4>
+                            <ul class="menu vertical">
+                                <li><a href="https://httpd.apache.org/docs/" target="_blank">Официальная документация</a></li>
+                                <li><a href="https://httpd.apache.org/download.cgi" target="_blank">Скачать Apache</a></li>
+                                <li><a href="https://github.com/apache/httpd" target="_blank">Исходный код на GitHub</a></li>
+                                <li><a href="https://stackoverflow.com/questions/tagged/apache" target="_blank">Вопросы на Stack Overflow</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer margin-top-3">
+        <div class="grid-container">
+            <div class="grid-x">
+                <div class="large-12 cell">
+                    <p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
+                    <p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21</p>
+                    <p>Почта: <a href="mailto:kislyakovamariya@hybrid.ru">kislyakovamariya@hybrid.ru</a></p>
+                    <p>Телефон: +7 (999) 123-45-67</p>
+                    <p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
