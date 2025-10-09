@@ -1,261 +1,258 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WEB-HYBRID - LiteSpeed Web Server</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
-    <link rel="stylesheet" href="css/custom.css">
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
-    <script>
-        $(document).foundation();
-    </script>
-    <script src="assets/menu.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>WEB-HYBRID - LiteSpeed Web Server</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
+	<link rel="stylesheet" href="css/custom.css">
+	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
 	<script>
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
+		$(document).foundation();
+	</script>
+	<script src="assets/menu.js"></script>
+	<script>
+		var gk_isXlsx = false;
+		var gk_xlsxFileLookup = {};
+		var gk_fileData = {};
+		function filledCell(cell) {
+		  return cell !== '' && cell != null;
+		}
+		function loadFileData(filename) {
+		if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+			try {
+				var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+				var firstSheetName = workbook.SheetNames[0];
+				var worksheet = workbook.Sheets[firstSheetName];
 
-                // Преобразование таблицы в JSON для фильтрации пустых строк
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Отфильтрованные пустые строки
-                var filteredData = jsonData.filter(function(row) { return row.some(filledCell); });
+				// Преобразование таблицы в JSON для фильтрации пустых строк
+				var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+				// Отфильтрованные пустые строки
+				var filteredData = jsonData.filter(function(row) { return row.some(filledCell); });
 
-                // Поиск строки заголовка, игнорируя строки с меньшим количеством заполненных ячеек, чем в следующей строке
-                var headerRowIndex = filteredData.findIndex(function(row, index) {
-                  return row.filter(filledCell).length >= (filteredData[index + 1] ? filteredData[index + 1].filter(filledCell).length : 0);
-                });
-                // Отступ
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
+				// Поиск строки заголовка, игнорируя строки с меньшим количеством заполненных ячеек, чем в следующей строке
+				var headerRowIndex = filteredData.findIndex(function(row, index){
+				  return row.filter(filledCell).length >= (filteredData[index + 1] ? filteredData[index + 1].filter(filledCell).length : 0);
+				});
+				// Отступ
+				if (headerRowIndex === -1 || headerRowIndex > 25) {
+				  headerRowIndex = 0;
+				}
 
-                // Преобразование готового JSON обратно в CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-    </script>
-    <style>
-        .price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #1779ba;
-            margin: 10px 0;
-        }
-        .table-scroll {
-            overflow-x: auto;
-            margin: 20px 0;
-        }
-        .progress-meter-text {
-            color: white;
-            font-size: 0.8rem;
-            padding: 2px 5px;
-        }
-    </style>
+				// Преобразование готового JSON обратно в CSV
+				var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+				csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+				return csv;
+			} catch (e) {
+				console.error(e);
+				return "";
+			}
+		}
+		return gk_fileData[filename] || "";
+		}
+	</script>
+	<style>
+		.price {
+			font-size: 1.5rem;
+			font-weight: bold;
+			color: #1779ba;
+			margin: 10px 0;
+		}
+		.table-scroll {
+			overflow-x: auto;
+			margin: 20px 0;
+		}
+		.progress-meter-text {
+			color: white;
+			font-size: 0.8rem;
+			padding: 2px 5px;
+		}
+	</style>
 </head>
 <body>
-<!-- Кнопка мобильного меню -->
-    <div class="mobile-menu-button">
-        <button onclick="toggleMobileMenu()">☰ WEB-HYBRID</button>
-    </div>
 
-    <!-- Десктопное меню -->
-    <div class="top-bar desktop-menu">
-        <div class="top-bar-left">
-            <ul class="dropdown menu" data-dropdown-menu>
-                <li class="menu-text">WEB-HYBRID</li>
-                <li><a href="index.html">Главная</a></li>
-                <li>
-                    <a href="servers.html">HTTP Серверы ▾</a>
-                    <ul class="menu">
-                        <li><a href="apache.html">Apache</a></li>
-                        <li><a href="nginx.html">Nginx</a></li>
-                        <li><a href="litespeed.html">LiteSpeed</a></li>
-                    </ul>
-                </li>
-                <li><a href="comparison.html">Сравнение серверов</a></li>
-                <li><a href="languages.html">Языки программирования</a></li>
-            </ul>
-        </div>
-    </div>
+	<div class="mobile-menu-button">
+		<button onclick="toggleMobileMenu()">☰ WEB-HYBRID</button>
+	</div>
 
-    <!-- Мобильное боковое меню -->
-    <div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
-    <div class="mobile-sidebar" id="mobileSidebar">
-        <button class="close-btn" onclick="closeMobileMenu()">×</button>
-        <h4>WEB-HYBRID</h4>
-        <ul>
-            <li><a href="index.html" onclick="closeMobileMenu()">Главная</a></li>
-            <li>
-                <a href="javascript:void(0)" onclick="toggleSubmenu('serversSubmenu')">HTTP Серверы ▾</a>
-                <ul class="submenu" id="serversSubmenu">
-                    <li><a href="apache.html" onclick="closeMobileMenu()">Apache</a></li>
-                    <li><a href="nginx.html" onclick="closeMobileMenu()">Nginx</a></li>
-                    <li><a href="litespeed.html" onclick="closeMobileMenu()">LiteSpeed</a></li>
-                </ul>
-            </li>
-            <li><a href="comparison.html" onclick="closeMobileMenu()">Сравнение серверов</a></li>
-            <li><a href="languages.html" onclick="closeMobileMenu()">Языки программирования</a></li>
-        </ul>
-    </div>
-    </div>
+	<div class="top-bar desktop-menu">
+		<div class="top-bar-left">
+			<ul class="dropdown menu" data-dropdown-menu>
+				<li class="menu-text">WEB-HYBRID</li>
+				<li><a href="index.html">Главная</a></li>
+				<li>
+					<a href="servers.html">HTTP Серверы ▾</a>
+					<ul class="menu">
+						<li><a href="apache.html">Apache</a></li>
+						<li><a href="nginx.html">Nginx</a></li>
+						<li><a href="litespeed.html">LiteSpeed</a></li>
+					</ul>
+				</li>
+				<li><a href="comparison.html">Сравнение серверов</a></li>
+				<li><a href="languages.html">Языки программирования</a></li>
+			</ul>
+		</div>
+	</div>
 
-    <!-- Main Content -->
-    <div class="grid-container">
-        <div class="grid-x grid-padding-x" style="padding-top: 2rem;">
-            <!-- Main Content Area -->
-            <div class="large-8 cell">
-                <div class="hero-section">
-                    <h1>LiteSpeed Web Server</h1>
-                </div>
-                
-                <article class="blog-post">
-                    <h2><strong>Обзор LiteSpeed</strong></h2>
-                    <p><strong>LiteSpeed Web Server (LSWS)</strong> – это высокопроизводительный коммерческий веб-сервер, разработанный компанией LiteSpeed Technologies. Он был создан как замена Apache с сохранением совместимости, но с значительно улучшенной производительностью.</p>
-                    
-                    <h3><strong>Основные особенности LiteSpeed</strong></h3>
-                    <ul>
-                        <li><strong>Событийно-ориентированная архитектура</strong> – аналогичная Nginx, но с улучшениями;</li>
-                        <li><strong>Полная совместимость с Apache</strong> – поддержка .htaccess и mod_rewrite;</li>
-                        <li><strong>Встроенный кэш</strong> – LSCache для ускорения работы сайтов;</li>
-                        <li><strong>Низкое потребление ресурсов</strong> – эффективное использование CPU и памяти;</li>
-                        <li><strong>Безопасность</strong> – встроенная защита от DDoS-атак;</li>
-                        <li><strong>Простота миграции с Apache</strong> – прямая замена без изменения конфигурации.</li>
-                    </ul>
+	<div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
+	<div class="mobile-sidebar" id="mobileSidebar">
+		<button class="close-btn" onclick="closeMobileMenu()">×</button>
+		<h4>WEB-HYBRID</h4>
+		<ul>
+			<li><a href="index.html" onclick="closeMobileMenu()">Главная</a></li>
+			<li>
+				<a href="javascript:void(0)" onclick="toggleSubmenu('serversSubmenu')">HTTP Серверы ▾</a>
+				<ul class="submenu" id="serversSubmenu">
+					<li><a href="apache.html" onclick="closeMobileMenu()">Apache</a></li>
+					<li><a href="nginx.html" onclick="closeMobileMenu()">Nginx</a></li>
+					<li><a href="litespeed.html" onclick="closeMobileMenu()">LiteSpeed</a></li>
+				</ul>
+			</li>
+			<li><a href="comparison.html" onclick="closeMobileMenu()">Сравнение серверов</a></li>
+			<li><a href="languages.html" onclick="closeMobileMenu()">Языки программирования</a></li>
+		</ul>
+	</div>
 
-                    <h3><strong>Архитектура LiteSpeed</strong></h3>
-                    <p>LiteSpeed использует гибридную архитектуру, сочетающую лучшие черты Apache и Nginx. Он поддерживает событийно-ориентированную обработку как Nginx, но сохраняет совместимость с Apache.</p>
+	<!-- Main Content -->
+	<div class="grid-container">
+		<div class="grid-x grid-padding-x" style="padding-top: 2rem;">
+			<!-- Main Content Area -->
+			<div class="large-8 cell">
+				<div class="hero-section">
+					<h1>LiteSpeed Web Server</h1>
+				</div>
+				
+				<article class="blog-post">
+					<h2><strong>Обзор LiteSpeed</strong></h2>
+					<p><strong>LiteSpeed Web Server (LSWS)</strong> – это высокопроизводительный коммерческий веб-сервер, разработанный компанией LiteSpeed Technologies. Он был создан как замена Apache с сохранением совместимости, но с значительно улучшенной производительностью.</p>
+					
+					<h3><strong>Основные особенности LiteSpeed</strong></h3>
+					<ul>
+						<li><strong>Событийно-ориентированная архитектура</strong> – аналогичная Nginx, но с улучшениями;</li>
+						<li><strong>Полная совместимость с Apache</strong> – поддержка .htaccess и mod_rewrite;</li>
+						<li><strong>Встроенный кэш</strong> – LSCache для ускорения работы сайтов;</li>
+						<li><strong>Низкое потребление ресурсов</strong> – эффективное использование CPU и памяти;</li>
+						<li><strong>Безопасность</strong> – встроенная защита от DDoS-атак;</li>
+						<li><strong>Простота миграции с Apache</strong> – прямая замена без изменения конфигурации.</li>
+					</ul>
 
-                    <h4><strong>Ключевые компоненты архитектуры</strong></h4>
-                    <div class="grid-x grid-margin-x">
-                        <div class="medium-4 cell">
-                            <div class="card text-center">
-                                <div class="card-section">
-                                    <h5><strong>Event-Driven Architecture</strong></h5>
-                                    <p>Асинхронная обработка тысяч одновременных соединений с минимальными ресурсами</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-4 cell">
-                            <div class="card text-center">
-                                <div class="card-section">
-                                    <h5><strong>LSAPI</strong></h5>
-                                    <p>Высокоскоростной API для взаимодействия с PHP и другими языками</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-4 cell">
-                            <div class="card text-center">
-                                <div class="card-section">
-                                    <h5><strong>Anti-DDoS</strong></h5>
-                                    <p>Встроенная защита от распределенных атак</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>Архитектура LiteSpeed</strong></h3>
+					<p>LiteSpeed использует гибридную архитектуру, сочетающую лучшие черты Apache и Nginx. Он поддерживает событийно-ориентированную обработку как Nginx, но сохраняет совместимость с Apache.</p>
 
-                    <h3><strong>LSCache</strong></h3>
-                    <p>LSCache – это встроенная система кэширования, которая обеспечивает исключительную производительность для динамических приложений:</p>
-                    
-                    <div class="grid-x grid-margin-x">
-                        <div class="medium-6 cell">
-                            <div class="success callout">
-                                <h5><strong>Преимущества LSCache</strong></h5>
-                                <ul>
-                                    <li>Кэширование на уровне сервера (быстрее PHP-кэширования);</li>
-                                    <li>Поддержка динамического контента и персонализации;</li>
-                                    <li>Автоматическая очистка кэша при обновлении контента;</li>
-                                    <li>Интеграция с популярными CMS (WordPress, Joomla, Drupal).</li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="medium-6 cell">
-                            <div class="primary callout">
-                                <h5><strong>Производительность LSCache</strong></h5>
-                                <ul>
-                                    <li>Ускорение WordPress в 2-5 раз;</li>
-                                    <li>Снижение нагрузки на CPU до 80%;</li>
-                                    <li>Уменьшение времени ответа сервера;</li>
-                                    <li>Поддержка ESI (Edge Side Includes).</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+					<h4><strong>Ключевые компоненты архитектуры</strong></h4>
+					<div class="grid-x grid-margin-x">
+						<div class="medium-4 cell">
+							<div class="card text-center">
+								<div class="card-section">
+									<h5><strong>Event-Driven Architecture</strong></h5>
+									<p>Асинхронная обработка тысяч одновременных соединений с минимальными ресурсами</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-4 cell">
+							<div class="card text-center">
+								<div class="card-section">
+									<h5><strong>LSAPI</strong></h5>
+									<p>Высокоскоростной API для взаимодействия с PHP и другими языками</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-4 cell">
+							<div class="card text-center">
+								<div class="card-section">
+									<h5><strong>Anti-DDoS</strong></h5>
+									<p>Встроенная защита от распределенных атак</p>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                    <h3><strong>Преимущества LiteSpeed</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell">
-                            <div class="success callout">
-                                <div class="grid-x grid-margin-x">
-                                    <div class="medium-6 cell">
-                                        <ul>
-                                            <li>Высочайшая производительность (в 5-10 раз быстрее Apache);</li>
-                                            <li>Полная совместимость с Apache конфигурациями;</li>
-                                            <li>Встроенный кэш LSCache для динамических приложений;</li>
-                                            <li>Эффективная защита от DDoS-атак;</li>
-                                        </ul>
-                                    </div>
-                                    <div class="medium-6 cell">
-                                        <ul>
-                                            <li>Низкое потребление ресурсов CPU и памяти;</li>
-                                            <li>Простота миграции с Apache;</li>
-                                            <li>Отличная поддержка HTTP/2 и HTTP/3;</li>
-                                            <li>Интуитивная панель управления.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>LSCache</strong></h3>
+					<p>LSCache – это встроенная система кэширования, которая обеспечивает исключительную производительность для динамических приложений:</p>
+					
+					<div class="grid-x grid-margin-x">
+						<div class="medium-6 cell">
+							<div class="success callout">
+								<h5><strong>Преимущества LSCache</strong></h5>
+								<ul>
+									<li>Кэширование на уровне сервера (быстрее PHP-кэширования);</li>
+									<li>Поддержка динамического контента и персонализации;</li>
+									<li>Автоматическая очистка кэша при обновлении контента;</li>
+									<li>Интеграция с популярными CMS (WordPress, Joomla, Drupal).</li>
+								</ul>
+							</div>
+						</div>
+						<div class="medium-6 cell">
+							<div class="primary callout">
+								<h5><strong>Производительность LSCache</strong></h5>
+								<ul>
+									<li>Ускорение WordPress в 2-5 раз;</li>
+									<li>Снижение нагрузки на CPU до 80%;</li>
+									<li>Уменьшение времени ответа сервера;</li>
+									<li>Поддержка ESI (Edge Side Includes).</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 
-                    <h3><strong>Недостатки LiteSpeed</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell">
-                            <div class="alert callout">
-                                <div class="grid-x grid-margin-x">
-                                    <div class="medium-6 cell">
-                                        <ul>
-                                            <li>Коммерческая лицензия (платная);</li>
-                                            <li>Меньшее сообщество по сравнению с Apache/Nginx;</li>
-                                            <li>Ограниченная бесплатная версия (OpenLiteSpeed);</li>
-                                        </ul>
-                                    </div>
-                                    <div class="medium-6 cell">
-                                        <ul>
-                                            <li>Зависимость от производителя;</li>
-                                            <li>Меньше документации и руководств;</li>
-                                            <li>Ограниченная поддержка некоторых модулей Apache.</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>Преимущества LiteSpeed</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="cell">
+							<div class="success callout">
+								<div class="grid-x grid-margin-x">
+									<div class="medium-6 cell">
+										<ul>
+											<li>Высочайшая производительность (в 5-10 раз быстрее Apache);</li>
+											<li>Полная совместимость с Apache конфигурациями;</li>
+											<li>Встроенный кэш LSCache для динамических приложений;</li>
+											<li>Эффективная защита от DDoS-атак;</li>
+										</ul>
+									</div>
+									<div class="medium-6 cell">
+										<ul>
+											<li>Низкое потребление ресурсов CPU и памяти;</li>
+											<li>Простота миграции с Apache;</li>
+											<li>Отличная поддержка HTTP/2 и HTTP/3;</li>
+											<li>Интуитивная панель управления.</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                    <h3><strong>Установка и настройка</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="medium-6 cell">
-                            <div class="callout secondary">
-                                <h5>Установка OpenLiteSpeed на Ubuntu</h5>
-                                <pre><code># Добавление репозитория
+					<h3><strong>Недостатки LiteSpeed</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="cell">
+							<div class="alert callout">
+								<div class="grid-x grid-margin-x">
+									<div class="medium-6 cell">
+										<ul>
+											<li>Коммерческая лицензия (платная);</li>
+											<li>Меньшее сообщество по сравнению с Apache/Nginx;</li>
+											<li>Ограниченная бесплатная версия (OpenLiteSpeed);</li>
+										</ul>
+									</div>
+									<div class="medium-6 cell">
+										<ul>
+											<li>Зависимость от производителя;</li>
+											<li>Меньше документации и руководств;</li>
+											<li>Ограниченная поддержка некоторых модулей Apache.</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<h3><strong>Установка и настройка</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="medium-6 cell">
+							<div class="callout secondary">
+								<h5>Установка OpenLiteSpeed на Ubuntu</h5>
+								<pre><code># Добавление репозитория
 wget -O - http://rpms.litespeedtech.com/debian/enable_lst_debian_repo.sh | bash
 
 # Установка
@@ -264,148 +261,148 @@ apt-get install openlitespeed
 # Запуск
 systemctl start lsws
 systemctl enable lsws</code></pre>
-                            </div>
-                        </div>
-                        <div class="medium-6 cell">
-                            <div class="callout secondary">
-                                <h5>Базовая настройка</h5>
-                                <pre><code># Настройка административной панели
+							</div>
+						</div>
+						<div class="medium-6 cell">
+							<div class="callout secondary">
+								<h5>Базовая настройка</h5>
+								<pre><code># Настройка административной панели
 /usr/local/lsws/admin/misc/admpass.sh
 
 # Доступ к панели: https://server-ip:7080
 # Стандартный порт: 8088 (HTTP), 8443 (HTTPS)</code></pre>
-                            </div>
-                        </div>
-                    </div>
+							</div>
+						</div>
+					</div>
 
-                    <h3><strong>Идеальные сценарии использования</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="medium-6 cell">
-                            <div class="card">
-                                <div class="card-section">
-                                    <h5><strong>E-commerce сайты</strong></h5>
-                                    <p>Интернет-магазины с высокой нагрузкой и требованием к отклику</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-6 cell">
-                            <div class="card">
-                                <div class="card-section">
-                                    <h5><strong>WordPress сайты</strong></h5>
-                                    <p>Блоги и сайты на WordPress с плагином LSCache</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-6 cell">
-                            <div class="card">
-                                <div class="card-section">
-                                    <h5><strong>Enterprise приложения</strong></h5>
-                                    <p>Корпоративные порталы с высокими требованиями к безопасности</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-6 cell">
-                            <div class="card">
-                                <div class="card-section">
-                                    <h5><strong>Миграция с Apache</strong></h5>
-                                    <p>Проекты, требующие повышения производительности без изменения кода</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>Идеальные сценарии использования</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="medium-6 cell">
+							<div class="card">
+								<div class="card-section">
+									<h5><strong>E-commerce сайты</strong></h5>
+									<p>Интернет-магазины с высокой нагрузкой и требованием к отклику</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-6 cell">
+							<div class="card">
+								<div class="card-section">
+									<h5><strong>WordPress сайты</strong></h5>
+									<p>Блоги и сайты на WordPress с плагином LSCache</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-6 cell">
+							<div class="card">
+								<div class="card-section">
+									<h5><strong>Enterprise приложения</strong></h5>
+									<p>Корпоративные порталы с высокими требованиями к безопасности</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-6 cell">
+							<div class="card">
+								<div class="card-section">
+									<h5><strong>Миграция с Apache</strong></h5>
+									<p>Проекты, требующие повышения производительности без изменения кода</p>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                    <h3><strong>Безопасность и оптимизация</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell">
-                            <div class="warning callout">
-                                <h5>Рекомендации по безопасности</h5>
-                                <ul>
-                                    <li>Регулярно обновляйте LiteSpeed до последней версии;</li>
-                                    <li>Настройте брандмауэр и ограничьте доступ к административной панели;</li>
-                                    <li>Используйте сложные пароли для админ-панели;</li>
-                                    <li>Включите защиту от DDoS-атак в настройках;</li>
-                                    <li>Регулярно проверяйте логи на предмет подозрительной активности.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>Безопасность и оптимизация</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="cell">
+							<div class="warning callout">
+								<h5>Рекомендации по безопасности</h5>
+								<ul>
+									<li>Регулярно обновляйте LiteSpeed до последней версии;</li>
+									<li>Настройте брандмауэр и ограничьте доступ к административной панели;</li>
+									<li>Используйте сложные пароли для админ-панели;</li>
+									<li>Включите защиту от DDoS-атак в настройках;</li>
+									<li>Регулярно проверяйте логи на предмет подозрительной активности.</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell text-center">
-                            <a href="comparison.html" class="button large">Сравнить с другими серверами</a>
-                            <a href="servers.html" class="button large hollow">Вернуться к списку серверов</a>
-                        </div>
-                    </div>
-                </article>
-            </div>
+					<div class="grid-x grid-margin-x">
+						<div class="cell text-center">
+							<a href="comparison.html" class="button large">Сравнить с другими серверами</a>
+							<a href="servers.html" class="button large hollow">Вернуться к списку серверов</a>
+						</div>
+					</div>
+				</article>
+			</div>
 
-            <!-- Sidebar -->
-            <div class="large-4 cell">
-                <aside class="sidebar">
-                    <div class="card">
-                        <div class="card-section">
-                            <h4>Быстрая навигация</h4>
-                            <ul class="menu vertical">
-                                <li><a href="apache.html">Apache HTTP Server</a></li>
-                                <li><a href="nginx.html">Nginx</a></li>
-                                <li><a href="litespeed.html" class="active">LiteSpeed</a></li>
-                                <li><a href="comparison.html">Сравнение серверов</a></li>
-                            </ul>
-                        </div>
-                    </div>
+			<!-- Sidebar -->
+			<div class="large-4 cell">
+				<aside class="sidebar">
+					<div class="card">
+						<div class="card-section">
+							<h4>Быстрая навигация</h4>
+							<ul class="menu vertical">
+								<li><a href="apache.html">Apache HTTP Server</a></li>
+								<li><a href="nginx.html">Nginx</a></li>
+								<li><a href="litespeed.html" class="active">LiteSpeed</a></li>
+								<li><a href="comparison.html">Сравнение серверов</a></li>
+							</ul>
+						</div>
+					</div>
 
-                    <div class="card">
-                        <div class="card-section">
-                            <h4>Производительность</h4>
-                            <p>Запросов в секунду (RPM):</p>
-                            <div class="progress" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-meter" style="width: 15%">
-                                    <p class="progress-meter-text">Apache: 1,200</p>
-                                </div>
-                            </div>
-                            <div class="progress" role="progressbar" aria-valuenow="44" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-meter" style="width: 44%">
-                                    <p class="progress-meter-text">Nginx: 3,500</p>
-                                </div>
-                            </div>
-                            <div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-meter" style="width: 100%">
-                                    <p class="progress-meter-text">LiteSpeed: 8,000</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<div class="card">
+						<div class="card-section">
+							<h4>Производительность</h4>
+							<p>Запросов в секунду (RPM):</p>
+							<div class="progress" role="progressbar" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
+								<div class="progress-meter" style="width: 15%">
+									<p class="progress-meter-text">Apache: 1,200</p>
+								</div>
+							</div>
+							<div class="progress" role="progressbar" aria-valuenow="44" aria-valuemin="0" aria-valuemax="100">
+								<div class="progress-meter" style="width: 44%">
+									<p class="progress-meter-text">Nginx: 3,500</p>
+								</div>
+							</div>
+							<div class="progress" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+								<div class="progress-meter" style="width: 100%">
+									<p class="progress-meter-text">LiteSpeed: 8,000</p>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                    <div class="card">
-                        <div class="card-section">
-                            <h4>Полезные ссылки</h4>
-                            <ul class="menu vertical">
-                                <li><a href="https://www.litespeedtech.com/products/litespeed-web-server" target="_blank">Официальный сайт</a></li>
-                                <li><a href="https://openlitespeed.org/" target="_blank">OpenLiteSpeed</a></li>
-                                <li><a href="https://docs.litespeedtech.com/" target="_blank">Документация</a></li>
-                                <li><a href="https://blog.litespeedtech.com/" target="_blank">Блог разработчиков</a></li>
-                                <li><a href="https://store.litespeedtech.com/" target="_blank">Магазин</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </aside>
-            </div>
-        </div>
-    </div>
+					<div class="card">
+						<div class="card-section">
+							<h4>Полезные ссылки</h4>
+							<ul class="menu vertical">
+								<li><a href="https://www.litespeedtech.com/products/litespeed-web-server" target="_blank">Официальный сайт</a></li>
+								<li><a href="https://openlitespeed.org/" target="_blank">OpenLiteSpeed</a></li>
+								<li><a href="https://docs.litespeedtech.com/" target="_blank">Документация</a></li>
+								<li><a href="https://blog.litespeedtech.com/" target="_blank">Блог разработчиков</a></li>
+								<li><a href="https://store.litespeedtech.com/" target="_blank">Магазин</a></li>
+							</ul>
+						</div>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</div>
 
-    <!-- Footer -->
-    <footer class="footer margin-top-3">
-        <div class="grid-container">
-            <div class="grid-x">
-                <div class="large-12 cell">
-                    <p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
-                    <p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21</p>
-                    <p>Почта: <a href="mailto:kislyakovamariya@WEB-HYBRID.ru">kislyakovamariya@WEB-HYBRID.ru</a></p>
-                    <p>Телефон: +7 (999) 123-45-67</p>
-                    <p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+	<!-- Footer -->
+	<footer class="footer margin-top-3">
+		<div class="grid-container">
+			<div class="grid-x">
+				<div class="large-12 cell">
+					<p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
+					<p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21</p>
+					<p>Почта: <a href="mailto:kislyakovamariya@hybrid.ru">kislyakovamariya@hybrid.ru</a></p>
+					<p>Телефон: +7 (999) 123-45-67</p>
+					<p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>

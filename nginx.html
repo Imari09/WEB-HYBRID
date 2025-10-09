@@ -1,303 +1,301 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WEB-HYBRID - Nginx</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
-    <link rel="stylesheet" href="css/custom.css">
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
-    <script>
-        $(document).foundation();
-    </script>
-    <script>
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>WEB-HYBRID - Nginx</title>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css">
+	<link rel="stylesheet" href="css/custom.css">
+	<link rel="icon" href="img/favicon.ico" type="image/x-icon">
+	<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js"></script>
+	<script>
+		$(document).foundation();
+	</script>
+	<script>
+		var gk_isXlsx = false;
+		var gk_xlsxFileLookup = {};
+		var gk_fileData = {};
+		function filledCell(cell) {
+		  return cell !== '' && cell != null;
+		}
+		function loadFileData(filename) {
+		if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+			try {
+				var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+				var firstSheetName = workbook.SheetNames[0];
+				var worksheet = workbook.Sheets[firstSheetName];
 
-                // Преобразование таблицы в JSON для фильтрации пустых строк
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Отфильтрованные пустые строки
-                var filteredData = jsonData.filter(function(row) { return row.some(filledCell); });
+				// Преобразование таблицы в JSON для фильтрации пустых строк
+				var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+				// Отфильтрованные пустые строки
+				var filteredData = jsonData.filter(function(row) { return row.some(filledCell); });
 
-                // Поиск строки заголовка, игнорируя строки с меньшим количеством заполненных ячеек, чем в следующей строке
-                var headerRowIndex = filteredData.findIndex(function(row, index) {
-                  return row.filter(filledCell).length >= (filteredData[index + 1] ? filteredData[index + 1].filter(filledCell).length : 0);
-                });
-                // Отступ
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
+				// Поиск строки заголовка, игнорируя строки с меньшим количеством заполненных ячеек, чем в следующей строке
+				var headerRowIndex = filteredData.findIndex(function(row, index){
+				  return row.filter(filledCell).length >= (filteredData[index + 1] ? filteredData[index + 1].filter(filledCell).length : 0);
+				});
+				// Отступ
+				if (headerRowIndex === -1 || headerRowIndex > 25) {
+				  headerRowIndex = 0;
+				}
 
-                // Преобразование готового JSON обратно в CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-    </script>
+				// Преобразование готового JSON обратно в CSV
+				var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex));
+				csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+				return csv;
+			} catch (e) {
+				console.error(e);
+				return "";
+			}
+		}
+		return gk_fileData[filename] || "";
+		}
+	</script>
 	<script src="assets/menu.js"></script>
 </head>
 <body>
-<!-- Кнопка мобильного меню -->
-    <div class="mobile-menu-button">
-        <button onclick="toggleMobileMenu()">☰ WEB-HYBRID</button>
-    </div>
 
-    <!-- Десктопное меню -->
-    <div class="top-bar desktop-menu">
-        <div class="top-bar-left">
-            <ul class="dropdown menu" data-dropdown-menu>
-                <li class="menu-text">WEB-HYBRID</li>
-                <li><a href="index.html">Главная</a></li>
-                <li>
-                    <a href="servers.html">HTTP Серверы ▾</a>
-                    <ul class="menu">
-                        <li><a href="apache.html">Apache</a></li>
-                        <li><a href="nginx.html">Nginx</a></li>
-                        <li><a href="litespeed.html">LiteSpeed</a></li>
-                    </ul>
-                </li>
-                <li><a href="comparison.html">Сравнение серверов</a></li>
-                <li><a href="languages.html">Языки программирования</a></li>
-            </ul>
-        </div>
-    </div>
+	<div class="mobile-menu-button">
+		<button onclick="toggleMobileMenu()">☰ WEB-HYBRID</button>
+	</div>
 
-    <!-- Мобильное боковое меню -->
-    <div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
-    <div class="mobile-sidebar" id="mobileSidebar">
-        <button class="close-btn" onclick="closeMobileMenu()">×</button>
-        <h4>WEB-HYBRID</h4>
-        <ul>
-            <li><a href="index.html" onclick="closeMobileMenu()">Главная</a></li>
-            <li>
-                <a href="javascript:void(0)" onclick="toggleSubmenu('serversSubmenu')">HTTP Серверы ▾</a>
-                <ul class="submenu" id="serversSubmenu">
-                    <li><a href="apache.html" onclick="closeMobileMenu()">Apache</a></li>
-                    <li><a href="nginx.html" onclick="closeMobileMenu()">Nginx</a></li>
-                    <li><a href="litespeed.html" onclick="closeMobileMenu()">LiteSpeed</a></li>
-                </ul>
-            </li>
-            <li><a href="comparison.html" onclick="closeMobileMenu()">Сравнение серверов</a></li>
-            <li><a href="languages.html" onclick="closeMobileMenu()">Языки программирования</a></li>
-        </ul>
-    </div>
+	<div class="top-bar desktop-menu">
+		<div class="top-bar-left">
+			<ul class="dropdown menu" data-dropdown-menu>
+				<li class="menu-text">WEB-HYBRID</li>
+				<li><a href="index.html">Главная</a></li>
+				<li>
+					<a href="servers.html">HTTP Серверы ▾</a>
+					<ul class="menu">
+						<li><a href="apache.html">Apache</a></li>
+						<li><a href="nginx.html">Nginx</a></li>
+						<li><a href="litespeed.html">LiteSpeed</a></li>
+					</ul>
+				</li>
+				<li><a href="comparison.html">Сравнение серверов</a></li>
+				<li><a href="languages.html">Языки программирования</a></li>
+			</ul>
+		</div>
+	</div>
 
-    <!-- Main Content -->
-    <div class="grid-container">
-        <div class="grid-x grid-padding-x" style="padding-top: 2rem;">
-            <!-- Main Content Area -->
-            <div class="large-8 cell">
-                <div class="hero-section">
-                    <h1>Nginx</h1>
-                </div>
-                <article class="blog-post">
-                    <h2><strong>Обзор Nginx</strong></h2>
-                    <p>В 2002 году Игорь Сысоев начал работу над Nginx для того чтобы решить проблему C10K – требование к ПО работать с 10 тысячами одновременных соединений. Первый публичный релиз был выпущен в 2004 году, поставленная цель была достигнута благодаря асинхронной event-driven архитектуре.</p>
-                    <p>Nginx начал набирать популярность с момента релиза благодаря своей легковесности (light-weight resource utilization) и возможности легко масштабироваться на минимальном железе. Nginx превосходен при отдаче статического контента и спроектирован так, чтобы передавать динамические запросы другому ПО предназначенному для их обработки.</p>
-                    <p>Администраторы часто выбирают Nginx из-за его эффективного потребления ресурсов и отзывчивости под нагрузкой, а также из-за возможности использовать его и как веб-сервер, и как прокси.</p>
-                    
-                    <div class="callout success">
-                        <h4>Интересный факт</h4>
-                        <p>Nginx используется такими гигантами как Netflix, WordPress.com, Cloudflare и многими другими крупными компаниями для обработки миллионов запросов в день.</p>
-                    </div>
+	<div class="overlay" id="overlay" onclick="closeMobileMenu()"></div>
+	<div class="mobile-sidebar" id="mobileSidebar">
+		<button class="close-btn" onclick="closeMobileMenu()">×</button>
+		<h4>WEB-HYBRID</h4>
+		<ul>
+			<li><a href="index.html" onclick="closeMobileMenu()">Главная</a></li>
+			<li>
+				<a href="javascript:void(0)" onclick="toggleSubmenu('serversSubmenu')">HTTP Серверы ▾</a>
+				<ul class="submenu" id="serversSubmenu">
+					<li><a href="apache.html" onclick="closeMobileMenu()">Apache</a></li>
+					<li><a href="nginx.html" onclick="closeMobileMenu()">Nginx</a></li>
+					<li><a href="litespeed.html" onclick="closeMobileMenu()">LiteSpeed</a></li>
+				</ul>
+			</li>
+			<li><a href="comparison.html" onclick="closeMobileMenu()">Сравнение серверов</a></li>
+			<li><a href="languages.html" onclick="closeMobileMenu()">Языки программирования</a></li>
+		</ul>
+	</div>
 
-                    <h3><strong>Особенности Nginx</strong></h3>
-                    <ul>
-                        <li><strong>Асинхронная событийно-ориентированная архитектура</strong> – неблокирующая обработка запросов;</li>
-                        <li><strong>Высокая производительность при большом количестве одновременных соединений</strong> – оптимизирован для работы с 10,000+ соединениями;</li>
-                        <li><strong>Эффективная работа со статическим контентом</strong> – быстрая отдача HTML, CSS, JavaScript файлов;</li>
-                        <li><strong>Балансировка нагрузки</strong> – распределение трафика между несколькими серверами;</li>
-                        <li><strong>Кэширование и сжатие</strong> – ускорение загрузки контента;</li>
-                        <li><strong>Обратный прокси</strong> – промежуточный сервер между клиентами и бэкенд-серверами;</li>
-                        <li><strong>Поддержка HTTP/2 и WebSocket</strong> – современные протоколы связи.</li>
-                    </ul>
+	<!-- Main Content -->
+	<div class="grid-container">
+		<div class="grid-x grid-padding-x" style="padding-top: 2rem;">
+			<!-- Main Content Area -->
+			<div class="large-8 cell">
+				<div class="hero-section">
+					<h1>Nginx</h1>
+				</div>
+				<article class="blog-post">
+					<h2><strong>Обзор Nginx</strong></h2>
+					<p>В 2002 году Игорь Сысоев начал работу над Nginx для того чтобы решить проблему C10K – требование к ПО работать с 10 тысячами одновременных соединений. Первый публичный релиз был выпущен в 2004 году, поставленная цель была достигнута благодаря асинхронной event-driven архитектуре.</p>
+					<p>Nginx начал набирать популярность с момента релиза благодаря своей легковесности (light-weight resource utilization) и возможности легко масштабироваться на минимальном железе. Nginx превосходен при отдаче статического контента и спроектирован так, чтобы передавать динамические запросы другому ПО предназначенному для их обработки.</p>
+					<p>Администраторы часто выбирают Nginx из-за его эффективного потребления ресурсов и отзывчивости под нагрузкой, а также из-за возможности использовать его и как веб-сервер, и как прокси.</p>
+					
+					<div class="callout success">
+						<h4>Интересный факт</h4>
+						<p>Nginx используется такими гигантами как Netflix, WordPress.com, Cloudflare и многими другими крупными компаниями для обработки миллионов запросов в день.</p>
+					</div>
 
-                    <h3><strong>Архитектура Nginx</strong></h3>
-                    <p>Nginx появился на сцене позднее Apache, по этой причине, его разработчик был лучше осведомлен о проблемах конкурентности, с которыми сталкиваются сайты при масштабировании. Благодаря этим знаниям Nginx изначально был спроектирован на базе асинхронных неблокирующих event-driven алгоритмов.</p>
-                    <p>Каждое соединение, обрабатываемое воркером, помещается в event loop вместе с другими соединениями. В этом цикле события обрабатываются асинхронно, позволяя обрабатывать задачи в неблокирующей манере. Когда соединение закрывается оно удаляется из цикла.</p>
-                    <p>Этот подход к обработке соединений позволяет Nginx'у невероятно масштабироваться при ограниченных ресурсах. Поскольку сервер однопоточный и он не создает процессы под каждое соединение, использование памяти и CPU относительно равномерно, даже при высоких нагрузках.</p>
+					<h3><strong>Особенности Nginx</strong></h3>
+					<ul>
+						<li><strong>Асинхронная событийно-ориентированная архитектура</strong> – неблокирующая обработка запросов;</li>
+						<li><strong>Высокая производительность при большом количестве одновременных соединений</strong> – оптимизирован для работы с 10,000+ соединениями;</li>
+						<li><strong>Эффективная работа со статическим контентом</strong> – быстрая отдача HTML, CSS, JavaScript файлов;</li>
+						<li><strong>Балансировка нагрузки</strong> – распределение трафика между несколькими серверами;</li>
+						<li><strong>Кэширование и сжатие</strong> – ускорение загрузки контента;</li>
+						<li><strong>Обратный прокси</strong> – промежуточный сервер между клиентами и бэкенд-серверами;</li>
+						<li><strong>Поддержка HTTP/2 и WebSocket</strong> – современные протоколы связи.</li>
+					</ul>
 
-                    <h4><strong>Ключевые компоненты архитектуры</strong></h4>
-                    <div class="grid-x grid-margin-x">
-                        <div class="medium-6 cell">
-                            <div class="card">
-                                <div class="card-section">
-                                    <h5><strong>Master Process</strong></h5>
-                                    <p>Главный процесс, который управляет worker процессами, читает конфигурацию и связывается с портами.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-6 cell">
-                            <div class="card">
-                                <div class="card-section">
-                                    <h5><strong>Worker Processes</strong></h5>
-                                    <p>Дочерние процессы, которые обрабатывают входящие соединения асинхронно и неблокирующе.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>Архитектура Nginx</strong></h3>
+					<p>Nginx появился на сцене позднее Apache, по этой причине, его разработчик был лучше осведомлен о проблемах конкурентности, с которыми сталкиваются сайты при масштабировании. Благодаря этим знаниям Nginx изначально был спроектирован на базе асинхронных неблокирующих event-driven алгоритмов.</p>
+					<p>Каждое соединение, обрабатываемое воркером, помещается в event loop вместе с другими соединениями. В этом цикле события обрабатываются асинхронно, позволяя обрабатывать задачи в неблокирующей манере. Когда соединение закрывается оно удаляется из цикла.</p>
+					<p>Этот подход к обработке соединений позволяет Nginx'у невероятно масштабироваться при ограниченных ресурсах. Поскольку сервер однопоточный и он не создает процессы под каждое соединение, использование памяти и CPU относительно равномерно, даже при высоких нагрузках.</p>
 
-                    <h3><strong>Преимущества Nginx</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell">
-                            <div class="success callout">
-                                <ul>
-                                    <li>Высочайшая производительность при высоких нагрузках;</li>
-                                    <li>Низкое потребление памяти и CPU;</li>
-                                    <li>Отличная работа со статическим контентом;</li>
-                                    <li>Мощные возможности балансировки нагрузки;</li>
-                                    <li>Простая и понятная конфигурация;</li>
-                                    <li>Поддержка современных протоколов (HTTP/2, WebSocket).</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+					<h4><strong>Ключевые компоненты архитектуры</strong></h4>
+					<div class="grid-x grid-margin-x">
+						<div class="medium-6 cell">
+							<div class="card">
+								<div class="card-section">
+									<h5><strong>Master Process</strong></h5>
+									<p>Главный процесс, который управляет worker процессами, читает конфигурацию и связывается с портами.</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-6 cell">
+							<div class="card">
+								<div class="card-section">
+									<h5><strong>Worker Processes</strong></h5>
+									<p>Дочерние процессы, которые обрабатывают входящие соединения асинхронно и неблокирующе.</p>
+								</div>
+							</div>
+						</div>
+					</div>
 
-                    <h3><strong>Недостатки Nginx</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell">
-                            <div class="warning callout">
-                                <ul>
-                                    <li>Ограниченная поддержка .htaccess файлов;</li>
-                                    <li>Меньшее количество модулей по сравнению с Apache;</li>
-                                    <li>Динамические модули требуют перекомпиляции;</li>
-                                    <li>Менее удобен для shared хостинга.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>Преимущества Nginx</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="cell">
+							<div class="success callout">
+								<ul>
+									<li>Высочайшая производительность при высоких нагрузках;</li>
+									<li>Низкое потребление памяти и CPU;</li>
+									<li>Отличная работа со статическим контентом;</li>
+									<li>Мощные возможности балансировки нагрузки;</li>
+									<li>Простая и понятная конфигурация;</li>
+									<li>Поддержка современных протоколов (HTTP/2, WebSocket).</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 
-                    <h3><strong>Основные области использования Nginx</strong></h3>
-                    <div class="grid-x grid-margin-x">
-                        <div class="medium-4 cell">
-                            <div class="card text-center">
-                                <div class="card-section">
-                                    <h5><strong>Обратный прокси</strong></h5>
-                                    <p>Распределение нагрузки между бэкенд-серверами.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-4 cell">
-                            <div class="card text-center">
-                                <div class="card-section">
-                                    <h5><strong>Статический контент</strong></h5>
-                                    <p>Быстрая отдача изображений, CSS, JS файлов.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="medium-4 cell">
-                            <div class="card text-center">
-                                <div class="card-section">
-                                    <h5><strong>Load Balancer</strong></h5>
-                                    <p>Балансировка трафика между серверами.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+					<h3><strong>Недостатки Nginx</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="cell">
+							<div class="warning callout">
+								<ul>
+									<li>Ограниченная поддержка .htaccess файлов;</li>
+									<li>Меньшее количество модулей по сравнению с Apache;</li>
+									<li>Динамические модули требуют перекомпиляции;</li>
+									<li>Менее удобен для shared хостинга.</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 
-                    <div class="callout primary">
-                        <h4>Быстрый старт</h4>
-                        <p>Установка Nginx на Ubuntu:</p>
-                        <pre><code>sudo apt update
+					<h3><strong>Основные области использования Nginx</strong></h3>
+					<div class="grid-x grid-margin-x">
+						<div class="medium-4 cell">
+							<div class="card text-center">
+								<div class="card-section">
+									<h5><strong>Обратный прокси</strong></h5>
+									<p>Распределение нагрузки между бэкенд-серверами.</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-4 cell">
+							<div class="card text-center">
+								<div class="card-section">
+									<h5><strong>Статический контент</strong></h5>
+									<p>Быстрая отдача изображений, CSS, JS файлов.</p>
+								</div>
+							</div>
+						</div>
+						<div class="medium-4 cell">
+							<div class="card text-center">
+								<div class="card-section">
+									<h5><strong>Load Balancer</strong></h5>
+									<p>Балансировка трафика между серверами.</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="callout primary">
+						<h4>Быстрый старт</h4>
+						<p>Установка Nginx на Ubuntu:</p>
+						<pre><code>sudo apt update
 sudo apt install nginx
 sudo systemctl start nginx
 sudo systemctl enable nginx</code></pre>
-                    </div>
+					</div>
 
-                    <h3><strong>Безопасность Nginx</strong></h3>
-                    <p>Рекомендации по безопасности:</p>
-                    <ul>
-                        <li>Скрыть версию Nginx в заголовках;</li>
-                        <li>Настроить ограничения для запросов;</li>
-                        <li>Использовать SSL/TLS с современными шифрами;</li>
-                        <li>Регулярно обновлять Nginx;</li>
-                        <li>Настроить файрвол и ограничить доступ.</li>
-                    </ul>
+					<h3><strong>Безопасность Nginx</strong></h3>
+					<p>Рекомендации по безопасности:</p>
+					<ul>
+						<li>Скрыть версию Nginx в заголовках;</li>
+						<li>Настроить ограничения для запросов;</li>
+						<li>Использовать SSL/TLS с современными шифрами;</li>
+						<li>Регулярно обновлять Nginx;</li>
+						<li>Настроить файрвол и ограничить доступ.</li>
+					</ul>
 
-                    <div class="grid-x grid-margin-x">
-                        <div class="cell text-center">
-                            <a href="litespeed.html" class="button large">Перейти к LiteSpeed →</a>
-                            <a href="servers.html" class="button large hollow">Вернуться к списку серверов</a>
-                        </div>
-                    </div>
-                </article>
-            </div>
+					<div class="grid-x grid-margin-x">
+						<div class="cell text-center">
+							<a href="litespeed.html" class="button large">Перейти к LiteSpeed →</a>
+							<a href="servers.html" class="button large hollow">Вернуться к списку серверов</a>
+						</div>
+					</div>
+				</article>
+			</div>
 
-            <!-- Sidebar -->
-            <div class="large-4 cell">
-                <aside class="sidebar">
-                    <div class="card">
-                        <div class="card-section">
-                            <h4>Быстрая навигация</h4>
-                            <ul class="menu vertical">
-                                <li><a href="apache.html">Apache HTTP Server</a></li>
-                                <li><a href="nginx.html">Nginx</a></li>
-                                <li><a href="litespeed.html">LiteSpeed</a></li>
-                                <li><a href="comparison.html">Сравнение серверов</a></li>
-                            </ul>
-                        </div>
-                    </div>
+			<!-- Sidebar -->
+			<div class="large-4 cell">
+				<aside class="sidebar">
+					<div class="card">
+						<div class="card-section">
+							<h4>Быстрая навигация</h4>
+							<ul class="menu vertical">
+								<li><a href="apache.html">Apache HTTP Server</a></li>
+								<li><a href="nginx.html">Nginx</a></li>
+								<li><a href="litespeed.html">LiteSpeed</a></li>
+								<li><a href="comparison.html">Сравнение серверов</a></li>
+							</ul>
+						</div>
+					</div>
 
-                    <div class="card">
-                        <div class="card-section">
-                            <h4>Статистика Nginx</h4>
-                            <ul>
-                                <li><strong>Год выпуска:</strong> 2004</li>
-                                <li><strong>Текущая версия:</strong> 1.24.x</li>
-                                <li><strong>Рыночная доля:</strong> ~34%</li>
-                                <li><strong>Лицензия:</strong> BSD-подобная</li>
-                                <li><strong>Разработчик:</strong> Игорь Сысоев</li>
-                            </ul>
-                        </div>
-                    </div>
+					<div class="card">
+						<div class="card-section">
+							<h4>Статистика Nginx</h4>
+							<ul>
+								<li><strong>Год выпуска:</strong> 2004</li>
+								<li><strong>Текущая версия:</strong> 1.24.x</li>
+								<li><strong>Рыночная доля:</strong> ~34%</li>
+								<li><strong>Лицензия:</strong> BSD-подобная</li>
+								<li><strong>Разработчик:</strong> Игорь Сысоев</li>
+							</ul>
+						</div>
+					</div>
 
-                    <div class="card">
-                        <div class="card-section">
-                            <h4>Полезные ссылки</h4>
-                            <ul class="menu vertical">
-                                <li><a href="https://nginx.org/ru/docs/" target="_blank">Официальная документация</a></li>
-                                <li><a href="https://nginx.org/ru/download.html" target="_blank">Скачать Nginx</a></li>
-                                <li><a href="https://github.com/nginx/nginx" target="_blank">Исходный код</a></li>
-                                <li><a href="https://www.nginx.com/resources/wiki/" target="_blank">Ресурсы и руководства</a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </aside>
-            </div>
-        </div>
-    </div>
+					<div class="card">
+						<div class="card-section">
+							<h4>Полезные ссылки</h4>
+							<ul class="menu vertical">
+								<li><a href="https://nginx.org/ru/docs/" target="_blank">Официальная документация</a></li>
+								<li><a href="https://nginx.org/ru/download.html" target="_blank">Скачать Nginx</a></li>
+								<li><a href="https://github.com/nginx/nginx" target="_blank">Исходный код</a></li>
+								<li><a href="https://www.nginx.com/resources/wiki/" target="_blank">Ресурсы и руководства</a></li>
+							</ul>
+						</div>
+					</div>
+				</aside>
+			</div>
+		</div>
+	</div>
 
-    <!-- Footer -->
-    <footer class="footer margin-top-3">
-        <div class="grid-container">
-            <div class="grid-x">
-                <div class="large-12 cell">
-                    <p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
-                    <p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21</p>
-                    <p>Почта: <a href="mailto:kislyakovamariya@WEB-HYBRID.ru">kislyakovamariya@WEB-HYBRID.ru</a></p>
-                    <p>Телефон: +7 (999) 123-45-67</p>
-                    <p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+	<!-- Footer -->
+	<footer class="footer margin-top-3">
+		<div class="grid-container">
+			<div class="grid-x">
+				<div class="large-12 cell">
+					<p>WEB-HYBRID – Ресурс, посвященный HTTP серверам и технологиям веб-разработки.</p>
+					<p>Адрес: г. Сыктывкар, ул. Рабочая, д.35, офис 21</p>
+					<p>Почта: <a href="mailto:kislyakovamariya@hybrid.ru">kislyakovamariya@hybrid.ru</a></p>
+					<p>Телефон: +7 (999) 123-45-67</p>
+					<p>&copy; 2025 WEB-HYBRID. Все права защищены.</p>
+				</div>
+			</div>
+		</div>
+	</footer>
 </body>
 </html>
