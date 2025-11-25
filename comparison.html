@@ -204,20 +204,28 @@
 				<h3><strong>Потребление памяти</strong></h3>
 				<div class="grid-x grid-margin-x">
 					<div class="cell">
-						<div class="progress" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100">
-							<div class="progress-meter" style="width: 80%">
-								<p class="progress-meter-text">Apache: 80MB на процесс</p>
-							</div>
+						<!-- Apache -->
+						<div class="memory-label">
+							<strong>Apache: 80MB на процесс</strong>
 						</div>
-						<div class="progress" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
-							<div class="progress-meter" style="width: 30%">
-								<p class="progress-meter-text">Nginx: 30MB на процесс</p>
-							</div>
+						<div class="progress" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="margin-bottom: 1rem;">
+							<div class="progress-meter" style="width: 80%"></div>
 						</div>
-						<div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">
-							<div class="progress-meter" style="width: 25%">
-								<p class="progress-meter-text">LiteSpeed: 25MB на процесс</p>
-							</div>
+						
+						<!-- Nginx -->
+						<div class="memory-label">
+							<strong>Nginx: 30MB на процесс</strong>
+						</div>
+						<div class="progress" role="progressbar" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100" style="margin-bottom: 1rem;">
+							<div class="progress-meter" style="width: 30%"></div>
+						</div>
+						
+						<!-- LiteSpeed -->
+						<div class="memory-label">
+							<strong>LiteSpeed: 25MB на процесс</strong>
+						</div>
+						<div class="progress" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="margin-bottom: 1rem;">
+							<div class="progress-meter" style="width: 25%"></div>
 						</div>
 					</div>
 				</div>
